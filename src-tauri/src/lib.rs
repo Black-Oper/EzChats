@@ -59,6 +59,7 @@ async fn send_message(
     timestamp: String,
 ) -> Result<String, String> {
     let peer_url = PEER_URL.get().ok_or("Peer URL not initialized")?;
+    println!("Enviando mensagem para: {}", peer_url); // Log do destino
 
     let message = ChatMessage {
         username,
@@ -67,15 +68,18 @@ async fn send_message(
     };
 
     let token = generate_jwt(&message).map_err(|e| format!("Erro ao gerar JWT: {}", e))?;
+    println!("Token JWT gerado: {}", token); // Log do token
 
-    Client::new()
-        .post(peer_url)
-        .json(&token)
+    let client = Client::new();
+    let response = client
+        .post(format!("/message", peer_url)) // Certifique-se que a URL está correta
+        .header("Content-Type", "application/json")
+        .body(token.clone())
         .send()
         .await
         .map_err(|e| format!("Erro ao enviar mensagem: {}", e))?;
 
-    println!("Mensagem enviada: {}", token);
+    println!("Resposta do servidor: {:?}", response); // Log da resposta
     Ok(token)
 }
 
@@ -88,14 +92,22 @@ async fn handle_message(
     State(state): State<AppState>,
     Json(payload): Json<MessageRequest>,
 ) -> impl IntoResponse {
+    println!("Mensagem recebida no backend");
+    
     match read_jwt(&payload.token) {
         Ok(payload_str) => {
+            println!("JWT decodificado: {}", payload_str); // Log do payload
+            
             match serde_json::from_str::<ChatMessage>(&payload_str) {
                 Ok(msg) => {
+                    println!("Emitindo evento new_message para: {:?}", msg.username); // Log antes de emitir
+                    
                     if let Err(e) = state.app_handle.emit("new_message", (msg.username, msg.timestamp, msg.text)) {
                         eprintln!("Erro ao emitir evento: {}", e);
                         return (StatusCode::INTERNAL_SERVER_ERROR, "Erro ao processar mensagem").into_response();
                     }
+                    
+                    println!("Evento emitido com sucesso"); // Log de sucesso
                     StatusCode::OK.into_response()
                 }
                 Err(err) => {
