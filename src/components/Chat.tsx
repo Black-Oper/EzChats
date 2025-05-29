@@ -18,12 +18,6 @@ interface LocationState {
   connectionData: FormData;
 }
 
-interface ChatMessage {
-  username: string;
-  timestamp: number;
-  text: string;
-}
-
 const Chat: React.FC = () => {
   const formatTimestampToHHMM = (timestamp: number | undefined): string => {
     if (!timestamp) {
@@ -55,17 +49,20 @@ const Chat: React.FC = () => {
 
   // Adiciona o listener para o evento 'new_message'
   useEffect(() => {
-    const unlistenPromise = listen<ChatMessage>('new_message', (event) => {
-      const { username, timestamp, text } = event.payload;
+    const unlistenPromise = listen<Array<string>>('new_message', (event) => {
+
+      const payload = event.payload;
+
+      const username = payload[0];
       
       // Verifica se a mensagem não é do próprio usuário
       if (username !== connectionData.name) {
         console.log('Nova mensagem recebida:', event.payload);
         const newMessage: Message = {
           id: Date.now(), // Usando o timestamp como ID
-          text,
+          text: payload[2],
           sender: username,
-          timestamp,
+          timestamp: Date.now(),
         };
         
         setMessages((prevMessages) => [...prevMessages, newMessage]);

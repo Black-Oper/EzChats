@@ -3,7 +3,7 @@ use tokio::net::TcpListener;
 use reqwest::Client;
 use once_cell::sync::OnceCell;
 
-use axum::{Router, routing::post, http::StatusCode, response::IntoResponse, Json, extract::State};
+use axum::{extract::State, http::{StatusCode}, response::IntoResponse, routing::post, Json, Router};
 use serde::Deserialize;
 
 mod jwt;
@@ -13,7 +13,6 @@ use jwt::structs::ChatMessage;
 
 use tauri::{AppHandle, Emitter};
 
-// Variável global para armazenar o peer_url
 static PEER_URL: OnceCell<String> = OnceCell::new();
 static USERNAME: OnceCell<String> = OnceCell::new();
 
@@ -68,18 +67,29 @@ async fn send_message(
     };
 
     let token = generate_jwt(&message).map_err(|e| format!("Erro ao gerar JWT: {}", e))?;
-    println!("Token JWT gerado: {}", token); // Log do token
-
+    println!("Token JWT gerado: {}", token);
+    
     let client = Client::new();
+    
+    let peer_url = PEER_URL.get().ok_or("Peer URL not initialized")?;
+
+    let url = format!("{}/message", peer_url);
+
+// --- CORREÇÃO AQUI ---
+    // Crie um objeto JSON com a chave "token"
+    let payload = serde_json::json!({ "token": token });
+
     let response = client
-        .post(format!("/message", peer_url)) // Certifique-se que a URL está correta
-        .header("Content-Type", "application/json")
-        .body(token.clone())
+        .post(url)
+        // O método .json() automaticamente serializa o payload
+        // para JSON e define o header "Content-Type" para "application/json"
+        .json(&payload)
         .send()
         .await
         .map_err(|e| format!("Erro ao enviar mensagem: {}", e))?;
+    // --- FIM DA CORREÇÃO ---
 
-    println!("Resposta do servidor: {:?}", response); // Log da resposta
+    println!("Resposta do servidor: {:?}", response.status());
     Ok(token)
 }
 
