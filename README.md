@@ -5,7 +5,7 @@
 ![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![Tauri](https://img.shields.io/badge/tauri-%2324C8DB.svg?style=for-the-badge&logo=tauri&logoColor=%23FFFFFF)
-
+[![Latest release](https://badgen.net/github/release/Naereen/Strapdown.js)](https://github.com/Black-Oper/EzChats/releases/tag/v0.1.0)
 
 ## Sobre o Projeto
 
