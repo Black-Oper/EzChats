@@ -1,4 +1,3 @@
-// src/components/Chat.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { Message } from './types';
 import MessageInput from './MessageInput';
@@ -47,7 +46,6 @@ const Chat: React.FC = () => {
     }
   }, [messages]);
 
-  // Adiciona o listener para o evento 'new_message'
   useEffect(() => {
     const unlistenPromise = listen<Array<string>>('new_message', (event) => {
 
@@ -55,11 +53,10 @@ const Chat: React.FC = () => {
 
       const username = payload[0];
       
-      // Verifica se a mensagem não é do próprio usuário
       if (username !== connectionData.name) {
         console.log('Nova mensagem recebida:', event.payload);
         const newMessage: Message = {
-          id: Date.now(), // Usando o timestamp como ID
+          id: Date.now(),
           text: payload[2],
           sender: username,
           timestamp: Date.now(),
@@ -69,7 +66,6 @@ const Chat: React.FC = () => {
       }
     });
 
-    // Retorna uma função de limpeza para remover o listener quando o componente desmontar
     return () => {
       unlistenPromise.then((unlisten) => unlisten());
     };

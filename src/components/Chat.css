@@ -44,7 +44,6 @@ body, html, #root {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* janela de chat herda estilo de card */
 .chat-window {
   display: flex;
   flex-direction: column;
@@ -124,7 +123,6 @@ body, html, #root {
   right: 10px;
 }
 
-/* MessageInput (mesmo estilo dos inputs e botões do formulário) */
 .message-input-form {
   display: flex;
   gap: 0.5rem;
@@ -170,7 +168,6 @@ body, html, #root {
   box-shadow: 0 4px 15px rgba(138, 27, 163, 0.6);
 }
 
-/* custom scrollbar */
 .message-list::-webkit-scrollbar {
   width: 8px;
 }
