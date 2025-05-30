@@ -1,10 +1,12 @@
 use super::base64url::decode_b64::{decodificar_json_base64, decodificar_signature};
-use super::rsa::encrypt_rsa::encrypt;
+use super::sha256::sha256::hash_sha256;
 use super::structs::Header;
 use serde_json::{from_value, Value};
 
+use super::rsa::decrypt_rsa::decrypt;
+
 pub fn read_jwt(jwt: &str) -> Result<String, String> {
-    // 1. Separa header, payload e assinatura
+
     let parts: Vec<&str> = jwt.split('.').collect();
     if parts.len() != 3 {
         return Err("Invalid JWT format".into());
@@ -22,11 +24,15 @@ pub fn read_jwt(jwt: &str) -> Result<String, String> {
 
     let signature_rsa = decodificar_signature(signature_b64)
         .map_err(|e| e.to_string())?;
-    let signing_input = format!("{}.{}", header_b64, payload_b64);
-    let computed_signature =
-        encrypt(signing_input.as_bytes(), &header_json.n, &header_json.e);
 
-    if signature_rsa != computed_signature {
+    let signature = decrypt(&signature_rsa, header_json.n, header_json.e);
+
+    let signing_input = format!("{}.{}", header_b64, payload_b64);
+
+    let computed_signature =
+        hash_sha256(&signing_input);
+
+    if signature != computed_signature {
         return Err("Invalid JWT signature".into());
     }
 

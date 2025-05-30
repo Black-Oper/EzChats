@@ -100,20 +100,26 @@ const Chat: React.FC = () => {
 
   return (
     <div className="container">
-      <div className="chat-window">
+      <div className="card chat-window">
         <div className="message-list" ref={messageListRef}>
           {messages.map((msg) => (
-            <div key={msg.id} className={`message-container ${msg.sender === connectionData.name ? 'user' : 'client'}`}>
+            <div
+              key={msg.id}
+              className={`message-container ${
+                msg.sender === connectionData.name ? 'user' : 'client'
+              }`}
+            >
               <div className="message-bubble">
                 <h3>{msg.sender}</h3>
-                <br />
-                <h1>{msg.text}</h1>
-                <br />
-                <h4>{formatTimestampToHHMM(msg.timestamp)}</h4>
+                <p>{msg.text}</p>
+                <span className="timestamp">
+                  {formatTimestampToHHMM(msg.timestamp)}
+                </span>
               </div>
             </div>
           ))}
         </div>
+
         <MessageInput onSendMessage={handleSendMessage} />
       </div>
     </div>
