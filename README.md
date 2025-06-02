@@ -12,7 +12,7 @@
 <img src="./readme-utils/funcionamento.gif" width="800px">
 
 ### Descrição
-EZ Chats é uma aplicação de desktop para troca de mensagens que utiliza `webhooks` e tokens `JWT` com segurança `RS256`. Foi desenvolvida completamente do zero, sem depender de bibliotecas prontas para `Base64URL`, `RSA` ou `SHA-256`. O projeto foi construído com o framework `Tauri`, integrando um backend desenvolvido em `Rust` 🦀 com um frontend em `React` ⚛️. Esta aplicação foi desenvolvida como parte de um trabalho acadêmico da matéria de `Criptografia e Segurança`.
+EZ Chats é uma aplicação de desktop para troca de mensagens `p2p` que utiliza `webhooks` e tokens `JWT` com segurança `RS256`. Foi desenvolvida completamente do zero, sem depender de bibliotecas prontas para `Base64URL`, `RSA` ou `SHA-256`. O projeto foi construído com o framework `Tauri`, integrando um backend desenvolvido em `Rust` 🦀 com um frontend em `React` ⚛️. Esta aplicação foi desenvolvida como parte de um trabalho acadêmico da matéria de `Criptografia e Segurança`.
 
 ### Funcionalidades Principais
 - Troca de mensagens em tempo real.
